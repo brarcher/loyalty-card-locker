@@ -19,7 +19,10 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-x86-android-17
 
-script: gradle build lint test
+script: gradle build lint jacocoTestReport test connectedCheck
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
 
 after_failure:
 - cat app/build/outputs/lint-results.xml

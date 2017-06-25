@@ -38,7 +38,7 @@
     <string name="edit">Bearbeiten</string>
     <string name="editCardTitle">Kundenkarte bearbeiten</string>
     <string name="enterCard">Karte einfügen</string>
-    <!-- NEEDS TRANSLATED --><string name="editCard">Edit Card</string>
+    <string name="editCard">Bearbeite Karte</string>
     <string name="exportFailed">Export fehlgeschlagen: %1$s</string>
     <string name="barcodeType">Barcodeart</string>
     <string name="barcodeImageDescription">Bild des Barcodes</string>
@@ -66,16 +66,16 @@
     <string name="importOptionFixedButton">Verwende die exportierte Stelle</string>
     <string name="sendLabel">Senden&#8230;</string>
 
-    <!-- NEEDS TRANSLATED --><string name="startIntro">Start Intro</string>
-    <!-- NEEDS TRANSLATED --><string name="intro1Title">Welcome to Loyalty Card Keychain\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro1Description">Manage your barcode-based store/loyalty cards on your phone!\n\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro2Title">Adding Cards\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro2Description">Add a new card by touching the plus from the card list.\n\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro3Title">Adding Cards\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro3Description">To add the barcode, either capture with the camera or type in manually.\n\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro4Title">Show Card\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro4Description">To display a card, click on the store name from the main screen\n\n</string>
-    <!-- NEEDS TRANSLATED --><string name="intro5Title">Backup\n</string>
+    <string name="startIntro">Einführung starten</string>
+    <string name="intro1Title">Wilkommen in der Loyalty Card Keychain\n</string>
+    <string name="intro1Description"> Verwalte deine Kundenkarten auf deinem Smartphone!\n\n</string>
+    <string name="intro2Title">Karten hinzufügen\n</string>
+    <string name="intro2Description">Füge eine neue Karte über das "+" in der Karten Liste hinzu.\n\n</string>
+    <string name="intro3Title">Karten hinzufügen\n</string>
+    <string name="intro3Description">Zum Hinzufügen eines Barcodes, scan diesen mit einer Kamera oder tippe ihn ein.\n\n</string>
+    <string name="intro4Title">Karte anzeigen\n</string>
+    <string name="intro4Description">Zum Anzeigen einer Karte, klick auf den Laden im Hauptbildschirm\n\n</string>
+    <string name="intro5Title">Sicherung\n</string>
     <!-- NEEDS TRANSLATED --><string name="intro5Description">The cards can be backed-up. To export or import card data touch Import/Export in the menu on the main page.\n\n</string>
     <!-- NEEDS TRANSLATED --><string name="intro6Title">Feedback\n</string>
     <!-- NEEDS TRANSLATED --><string name="intro6Description">This app is free, ad-free, and open source. See details by touching About in the menu on the main page.\n\nPlease leave feedback in the app store! (:</string>

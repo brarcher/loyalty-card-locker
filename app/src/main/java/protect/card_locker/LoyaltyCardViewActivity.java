@@ -4,6 +4,7 @@ package protect.card_locker;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.TextViewCompat;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +43,7 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     boolean rotationEnabled;
     DBHelper db;
     Settings settings;
+    ImageButton star;
 
     private void extractIntentFields(Intent intent)
     {
@@ -76,6 +79,7 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         storeName = findViewById(R.id.storeName);
         barcodeImage = findViewById(R.id.barcode);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        star = findViewById(R.id.action_star_unstar);
 
         rotationEnabled = true;
     }
@@ -241,6 +245,10 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
                     setOrientatonLock(item, false);
                 }
                 rotationEnabled = !rotationEnabled;
+                return true;
+            case R.id.action_star_unstar:
+                 //todo
+
                 return true;
         }
 

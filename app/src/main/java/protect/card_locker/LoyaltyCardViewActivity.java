@@ -256,11 +256,11 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             case R.id.action_star_unstar:
                 if (starred)
                 {
-                    setStarinDB(item, id, false);
+                    setStarinDB(item, loyaltyCardId, false);
                 }
                 else
                 {
-                    setStarinDB(item, id, true);
+                    setStarinDB(item, loyaltyCardId, true);
                 }
                 starred = !starred;
                 return true;
@@ -270,21 +270,21 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     }
 
 
-    private void setStarinDB(MenuItem item,int id, boolean setstarred)
+    private void setStarinDB(MenuItem item,int card_id, boolean setstarred)
     {
         if(setstarred)
         {
             item.setIcon(R.drawable.ic_starred);
             item.setTitle(R.string.starred);
             //only starred has to be changed in db
-            db.updateLoyaltyCard(id,null, null, null, null, null, null, 1);
+            db.updateLoyaltyCard(card_id, 1);
         }
         else
         {
             item.setIcon(R.drawable.ic_unstarred);
             item.setTitle(R.string.unstarred);
             //only starred has to be changed in db
-            db.updateLoyaltyCard(id,null, null, null, null, null, null, 0);
+            db.updateLoyaltyCard(card_id, 0);
 
         }
     }

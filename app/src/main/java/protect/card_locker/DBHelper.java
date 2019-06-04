@@ -132,6 +132,17 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsUpdated == 1);
     }
 
+    public boolean updateLoyaltyCard(final int id, final Integer starred)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(LoyaltyCardDbIds.STARRED,starred);
+        int rowsUpdated = db.update(LoyaltyCardDbIds.TABLE, contentValues,
+                LoyaltyCardDbIds.ID + "=?",
+                new String[]{Integer.toString(id)});
+        return (rowsUpdated == 1);
+    }
+
     public LoyaltyCard getLoyaltyCard(final int id)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -164,8 +175,8 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
         Cursor res =  db.rawQuery("select * from " + LoyaltyCardDbIds.TABLE +
-                        " ORDER BY " + LoyaltyCardDbIds.STARRED + " DEC," +
-                " ORDER BY " + LoyaltyCardDbIds.STORE + " COLLATE NOCASE ASC", null);
+                        " ORDER BY " + LoyaltyCardDbIds.STARRED + " DESC," +
+                         LoyaltyCardDbIds.STORE + " COLLATE NOCASE ASC", null);
         return res;
     }
 

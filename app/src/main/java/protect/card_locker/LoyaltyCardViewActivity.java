@@ -4,7 +4,6 @@ package protect.card_locker;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.TextViewCompat;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,9 +39,11 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     View collapsingToolbarLayout;
     int loyaltyCardId;
     boolean rotationEnabled;
+    boolean starred;
     DBHelper db;
     Settings settings;
-    ImageButton star;
+
+    MenuItem starmenuitem;
 
     private void extractIntentFields(Intent intent)
     {
@@ -79,7 +79,6 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         storeName = findViewById(R.id.storeName);
         barcodeImage = findViewById(R.id.barcode);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
-        star = findViewById(R.id.action_star_unstar);
 
         rotationEnabled = true;
     }
@@ -117,6 +116,8 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             finish();
             return;
         }
+
+        starred = loyaltyCard.starred != 0;
 
         String formatString = loyaltyCard.barcodeType;
         final BarcodeFormat format = BarcodeFormat.valueOf(formatString);
@@ -211,6 +212,9 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             item.setVisible(false);
         }
 
+        starmenuitem = menu.findItem(R.id.action_star_unstar);
+        setStar(starmenuitem, starred);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -247,13 +251,41 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
                 rotationEnabled = !rotationEnabled;
                 return true;
             case R.id.action_star_unstar:
-                 //todo
-
+                if (starred)                 //todo
+                {
+                    setStar(item, id, false);
+                }
+                else
+                {
+                    setStar(item, id, true);
+                }
+                starred = !starred;
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void setStar(MenuItem item,int id, boolean setstarred)
+    {
+        if(setstarred)
+        {
+            item.setIcon(R.drawable.ic_starred);
+            item.setTitle("starred"); //todo
+            db.updateLoyaltyCard(id,null, null, null, null, null, null, 1);
+        }
+        else
+        {
+            item.setIcon(R.drawable.ic_unstarred);
+            item.setTitle("unstarred"); //todo
+            db.updateLoyaltyCard(id,null, null, null, null, null, null, 0);
+
+        }
+    }
+
+
+
 
     private void setOrientatonLock(MenuItem item, boolean lock)
     {

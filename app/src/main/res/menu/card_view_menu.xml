@@ -14,7 +14,7 @@
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_star_unstar"
-        android:icon="@drawable/ic_star"
+        android:icon="@drawable/ic_unstarred"
         android:title="@string/star"
         app:showAsAction="always"/>
 </menu>

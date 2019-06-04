@@ -10,6 +10,8 @@
     <string name="note">Note</string>
     <string name="cardId">Card ID</string>
     <string name="barcodeType">Barcode Type</string>
+    <string name="starred">Add to favorites</string>
+    <string name="unstarred">Remove from favorites</string>
 
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -123,5 +125,5 @@
     <string name="settings_key_display_barcode_max_brightness" translatable="false">pref_display_card_max_brightness</string>
     <string name="settings_lock_barcode_orientation">Lock barcode orientation</string>
     <string name="settings_key_lock_barcode_orientation" translatable="false">pref_lock_barcode_orientation</string>
-    <string name="star">starred</string>
+
 </resources>

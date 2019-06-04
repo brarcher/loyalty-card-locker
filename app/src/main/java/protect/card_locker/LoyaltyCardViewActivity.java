@@ -212,8 +212,11 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             item.setVisible(false);
         }
 
-        starmenuitem = menu.findItem(R.id.action_star_unstar);
-        setStar(starMenuItem, starred);
+        starMenuItem = menu.findItem(R.id.action_star_unstar);
+        if (starred) {
+            starMenuItem.setIcon(R.drawable.ic_starred);
+            starMenuItem.setTitle(R.string.starred);
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -251,13 +254,13 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
                 rotationEnabled = !rotationEnabled;
                 return true;
             case R.id.action_star_unstar:
-                if (starred)                 //todo
+                if (starred)
                 {
-                    setStar(item, id, false);
+                    setStarinDB(item, id, false);
                 }
                 else
                 {
-                    setStar(item, id, true);
+                    setStarinDB(item, id, true);
                 }
                 starred = !starred;
                 return true;
@@ -267,18 +270,20 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     }
 
 
-    private void setStar(MenuItem item,int id, boolean setstarred)
+    private void setStarinDB(MenuItem item,int id, boolean setstarred)
     {
         if(setstarred)
         {
             item.setIcon(R.drawable.ic_starred);
-            item.setTitle("starred"); //todo
+            item.setTitle(R.string.starred);
+            //only starred has to be changed in db
             db.updateLoyaltyCard(id,null, null, null, null, null, null, 1);
         }
         else
         {
             item.setIcon(R.drawable.ic_unstarred);
-            item.setTitle("unstarred"); //todo
+            item.setTitle(R.string.unstarred);
+            //only starred has to be changed in db
             db.updateLoyaltyCard(id,null, null, null, null, null, null, 0);
 
         }

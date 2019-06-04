@@ -355,13 +355,13 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         }
 
         if(updateLoyaltyCard)
-        {
-            db.updateLoyaltyCard(loyaltyCardId, store, note, cardId, barcodeType, headingColorValue, headingStoreTextColorValue,null); //todo
+        {   //update of "starred" not necessary, since it cannot be changed in this activity (only in ViewActivity)
+            db.updateLoyaltyCard(loyaltyCardId, store, note, cardId, barcodeType, headingColorValue, headingStoreTextColorValue,null);
             Log.i(TAG, "Updated " + loyaltyCardId + " to " + cardId);
         }
         else
         {
-            loyaltyCardId = (int)db.insertLoyaltyCard(store, note, cardId, barcodeType, headingColorValue, headingStoreTextColorValue,null); //todo
+            loyaltyCardId = (int)db.insertLoyaltyCard(store, note, cardId, barcodeType, headingColorValue, headingStoreTextColorValue,0);
         }
 
         finish();

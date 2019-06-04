@@ -36,6 +36,7 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     View noteViewDivider;
     TextView storeName;
     ImageView barcodeImage;
+    MenuItem starMenuItem;
     View collapsingToolbarLayout;
     int loyaltyCardId;
     boolean rotationEnabled;
@@ -43,7 +44,6 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     DBHelper db;
     Settings settings;
 
-    MenuItem starmenuitem;
 
     private void extractIntentFields(Intent intent)
     {
@@ -213,7 +213,7 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         }
 
         starmenuitem = menu.findItem(R.id.action_star_unstar);
-        setStar(starmenuitem, starred);
+        setStar(starMenuItem, starred);
 
         return super.onCreateOptionsMenu(menu);
     }

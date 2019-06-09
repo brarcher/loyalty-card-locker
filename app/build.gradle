@@ -52,6 +52,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '20.0'
     compile 'com.github.apl-devs:appintro:v4.2.0'
     compile "com.vanniktech:vntnumberpickerpreference:1.0.0"
+    compile group: 'com.android.tools.layoutlib', name: 'layoutlib-api', version: '26.2.0'
     testCompile 'junit:junit:4.12'
     testCompile "org.robolectric:robolectric:3.3.2"
 }

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -24,16 +26,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+
+import java.io.IOException;
 
 public class LoyaltyCardEditActivity extends AppCompatActivity
 {
     private static final String TAG = "CardLocker";
 
     private static final int SELECT_BARCODE_REQUEST = 1;
+    private static final int SELECT_IMAGE_REQUEST = 2;
 
     EditText storeFieldEdit;
     EditText noteFieldEdit;
@@ -50,6 +62,7 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
     View barcodeCaptureLayout;
 
     Button captureButton;
+    Button importImageButton;
     Button enterButton;
 
     int loyaltyCardId;
@@ -102,6 +115,7 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         barcodeCaptureLayout = findViewById(R.id.barcodeCaptureLayout);
 
         captureButton = findViewById(R.id.captureButton);
+        importImageButton = findViewById(R.id.importImageButton);
         enterButton = findViewById(R.id.enterButton);
     }
 
@@ -259,6 +273,20 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         };
 
         captureButton.setOnClickListener(captureCallback);
+
+        View.OnClickListener importImageCallback = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                photoPickerIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(photoPickerIntent, SELECT_IMAGE_REQUEST);
+            }
+        };
+
+        importImageButton.setOnClickListener(importImageCallback);
 
         enterButton.setOnClickListener(new View.OnClickListener()
         {
@@ -449,12 +477,46 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
             format = result.getFormatName();
         }
 
-        if(requestCode == SELECT_BARCODE_REQUEST && resultCode == Activity.RESULT_OK)
+        if (resultCode == Activity.RESULT_OK)
         {
-            Log.i(TAG, "Received barcode information from typing it");
+            if(requestCode == SELECT_BARCODE_REQUEST)
+            {
+                Log.i(TAG, "Received barcode information from typing it");
 
-            contents = intent.getStringExtra(BarcodeSelectorActivity.BARCODE_CONTENTS);
-            format = intent.getStringExtra(BarcodeSelectorActivity.BARCODE_FORMAT);
+                contents = intent.getStringExtra(BarcodeSelectorActivity.BARCODE_CONTENTS);
+                format = intent.getStringExtra(BarcodeSelectorActivity.BARCODE_FORMAT);
+            }
+            else if (requestCode == SELECT_IMAGE_REQUEST)
+            {
+                Log.i(TAG, "Received barcode image");
+
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), intent.getData());
+                } catch (IOException e) {
+                    Log.e(TAG, "Error getting the image data");
+                    e.printStackTrace();
+                    return;
+                }
+
+                // In order to decode it, the Bitmap must first be converted into a pixel array...
+                int[] intArray = new int[bitmap.getWidth()*bitmap.getHeight()];
+                bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+                // ...and then turned into a binary bitmap from its luminance
+                LuminanceSource source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), intArray);
+                BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                try {
+                    Result qrCodeResult = new MultiFormatReader().decode(binaryBitmap);
+
+                    contents = qrCodeResult.getText();
+                    format = qrCodeResult.getBarcodeFormat().name();
+                } catch (NotFoundException e) {
+                    Log.i(TAG, "No barcode was found");
+                    e.printStackTrace();
+                }
+            }
         }
 
         if(contents != null && contents.isEmpty() == false &&

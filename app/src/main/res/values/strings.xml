@@ -125,4 +125,5 @@
     <string name="settings_key_display_barcode_max_brightness" translatable="false">pref_display_card_max_brightness</string>
     <string name="settings_lock_barcode_orientation">Lock barcode orientation</string>
     <string name="settings_key_lock_barcode_orientation" translatable="false">pref_lock_barcode_orientation</string>
+    <string name="importImage">Import from image</string>
 </resources>

@@ -368,12 +368,21 @@
                                   android:padding="10.0dip"
                                   android:layout_width="fill_parent"
                                   android:layout_height="wrap_content"
-                                  android:id="@+id/barcodeCaptureLayout">
+                                  android:id="@+id/barcodeCaptureLayout"
+                                  android:baselineAligned="false">
+
                         <Button android:id="@+id/captureButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="@string/capture"
                                 android:layout_weight="1.0"/>
+
+                        <Button android:id="@+id/importImageButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/importImage"
+                                android:layout_weight="1.0"/>
+
                         <Button android:id="@+id/enterButton"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"

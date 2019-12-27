@@ -39,6 +39,8 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     TextView cardIdFieldView;
     TextView noteView;
     View noteViewDivider;
+    TextView barcodeFormatView;
+    View barcodeFormatViewDivider;
     TextView storeName;
     ImageView barcodeImage;
     View collapsingToolbarLayout;
@@ -99,6 +101,8 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         cardIdFieldView = findViewById(R.id.cardIdView);
         noteView = findViewById(R.id.noteView);
         noteViewDivider = findViewById(R.id.noteViewDivider);
+        barcodeFormatView = findViewById(R.id.barcodeFormatView);
+        barcodeFormatViewDivider = findViewById(R.id.barcodeFormatViewDivider);
         storeName = findViewById(R.id.storeName);
         barcodeImage = findViewById(R.id.barcode);
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
@@ -237,10 +241,13 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
                 Log.d(TAG, "ImageView size known known, creating barcode");
                 new BarcodeImageWriterTask(barcodeImage, cardIdString, format).execute();
             }
+            barcodeFormatView.setText(getString(R.string.barcodeTypePlaceholder, format));
         }
         else
         {
             findViewById(R.id.barcode).setVisibility(View.GONE);
+            barcodeFormatView.setVisibility(View.GONE);
+            barcodeFormatViewDivider.setVisibility(View.GONE);
         }
     }
 

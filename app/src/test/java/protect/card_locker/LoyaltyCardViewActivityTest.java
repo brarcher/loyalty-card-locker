@@ -35,7 +35,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowPackageManager;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
 
@@ -257,6 +256,11 @@ public class LoyaltyCardViewActivityTest
 
         checkAllFields(activity, ViewMode.ADD_CARD, "", "", "", "");
     }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersCheckFieldsAvailableLandscape()
+    {
+        startWithoutParametersCheckFieldsAvailable();
+    }
 
     @Test
     public void startWithoutParametersCannotCreateLoyaltyCard()
@@ -273,7 +277,6 @@ public class LoyaltyCardViewActivityTest
 
         final EditText storeField = activity.findViewById(R.id.storeNameEdit);
         final EditText noteField = activity.findViewById(R.id.noteEdit);
-        final TextView cardIdField = activity.findViewById(R.id.cardIdView);
 
         shadowOf(activity).clickMenuItem(R.id.action_save);
         assertEquals(0, db.getLoyaltyCardCount());
@@ -285,6 +288,11 @@ public class LoyaltyCardViewActivityTest
         noteField.setText("note");
         shadowOf(activity).clickMenuItem(R.id.action_save);
         assertEquals(0, db.getLoyaltyCardCount());
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersCannotCreateLoyaltyCardLandscape()
+    {
+        startWithoutParametersCannotCreateLoyaltyCard();
     }
 
     @Test
@@ -300,6 +308,11 @@ public class LoyaltyCardViewActivityTest
         assertEquals(false, activity.isFinishing());
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersBackLandscape()
+    {
+        startWithoutParametersBack();
     }
 
     @Test
@@ -324,6 +337,11 @@ public class LoyaltyCardViewActivityTest
         // Save and check the loyalty card
         saveLoyaltyCardWithArguments(activity, "store", "note", BARCODE_DATA, BARCODE_TYPE, true);
     }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersCaptureBarcodeCreateLoyaltyCardLandscape() throws IOException
+    {
+        startWithoutParametersCaptureBarcodeCreateLoyaltyCard();
+    }
 
     @Test
     public void startWithoutParametersCaptureBarcodeFailure() throws IOException
@@ -341,6 +359,11 @@ public class LoyaltyCardViewActivityTest
         captureBarcodeWithResult(activity, R.id.captureButton, false);
 
         checkAllFields(activity, ViewMode.ADD_CARD, "", "", "", "");
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersCaptureBarcodeFailureLandscape() throws IOException
+    {
+        startWithoutParametersCaptureBarcodeFailure();
     }
 
     @Test
@@ -364,6 +387,11 @@ public class LoyaltyCardViewActivityTest
         assertEquals(false, activity.isFinishing());
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersCaptureBarcodeCancelLandscape() throws IOException
+    {
+        startWithoutParametersCaptureBarcodeCancel();
     }
 
     private ActivityController createActivityWithLoyaltyCard(boolean editMode)
@@ -405,6 +433,11 @@ public class LoyaltyCardViewActivityTest
 
         checkAllFields(activity, ViewMode.UPDATE_CARD, "store", "note", BARCODE_DATA, BARCODE_TYPE);
     }
+    @Test @Config(qualifiers = "land")
+    public void startWithLoyaltyCardEditModeCheckDisplayLandscape() throws IOException
+    {
+        startWithLoyaltyCardEditModeCheckDisplay();
+    }
 
     @Test
     public void startWithLoyaltyCardViewModeCheckDisplay() throws IOException
@@ -420,6 +453,11 @@ public class LoyaltyCardViewActivityTest
         activityController.resume();
 
         checkAllFields(activity, ViewMode.VIEW_CARD, "store", "note", BARCODE_DATA, BARCODE_TYPE);
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithLoyaltyCardViewModeCheckDisplayLandscape() throws IOException
+    {
+        startWithLoyaltyCardViewModeCheckDisplay();
     }
 
     @Test
@@ -441,6 +479,11 @@ public class LoyaltyCardViewActivityTest
         captureBarcodeWithResult(activity, R.id.captureButton, true);
 
         checkAllFields(activity, ViewMode.UPDATE_CARD, "store", "note", BARCODE_DATA, BARCODE_TYPE);
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithLoyaltyCardWithBarcodeUpdateBarcodeLandscape() throws IOException
+    {
+        startWithLoyaltyCardWithBarcodeUpdateBarcode();
     }
 
     @Test
@@ -468,6 +511,11 @@ public class LoyaltyCardViewActivityTest
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
     }
+    @Test @Config(qualifiers = "land")
+    public void startWithLoyaltyCardWithReceiptUpdateReceiptCancelLandscape() throws IOException
+    {
+        startWithLoyaltyCardWithReceiptUpdateReceiptCancel();
+    }
 
     @Test
     public void checkMenu() throws IOException
@@ -492,6 +540,11 @@ public class LoyaltyCardViewActivityTest
         assertEquals("Share", menu.findItem(R.id.action_share).getTitle().toString());
         assertEquals("Edit", menu.findItem(R.id.action_edit).getTitle().toString());
     }
+    @Test @Config(qualifiers = "land")
+    public void checkMenuLandscape() throws IOException
+    {
+        checkMenu();
+    }
 
     @Test
     public void startWithMissingLoyaltyCard() throws IOException
@@ -512,6 +565,11 @@ public class LoyaltyCardViewActivityTest
         activityController.stop();
         activityController.destroy();
     }
+    @Test @Config(qualifiers = "land")
+    public void startWithMissingLoyaltyCardLandscape() throws IOException
+    {
+        startWithMissingLoyaltyCard();
+    }
 
     @Test
     public void startWithoutParametersViewBack()
@@ -529,6 +587,11 @@ public class LoyaltyCardViewActivityTest
         assertEquals(false, activity.isFinishing());
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
+    }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutParametersViewBackLandscape()
+    {
+        startWithoutParametersViewBack();
     }
 
     @Test
@@ -548,6 +611,11 @@ public class LoyaltyCardViewActivityTest
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
     }
+    @Test @Config(qualifiers = "land")
+    public void startWithoutColorsLandscape()
+    {
+        startWithoutColors();
+    }
 
     @Test
     public void startLoyaltyCardWithoutColorsSave() throws IOException
@@ -565,6 +633,11 @@ public class LoyaltyCardViewActivityTest
         // Save and check the loyalty card
         saveLoyaltyCardWithArguments(activity, "store", "note", BARCODE_DATA, BARCODE_TYPE, false);
     }
+    @Test @Config(qualifiers = "land")
+    public void startLoyaltyCardWithoutColorsSaveLandscape() throws IOException
+    {
+        startLoyaltyCardWithoutColorsSave();
+    }
 
     @Test
     public void startLoyaltyCardWithExplicitNoBarcodeSave() throws IOException
@@ -581,6 +654,11 @@ public class LoyaltyCardViewActivityTest
 
         // Save and check the loyalty card
         saveLoyaltyCardWithArguments(activity, "store", "note", BARCODE_DATA, LoyaltyCardEditActivity.NO_BARCODE, false);
+    }
+    @Test @Config(qualifiers = "land")
+    public void startLoyaltyCardWithExplicitNoBarcodeSaveLandscape() throws IOException
+    {
+        startLoyaltyCardWithExplicitNoBarcodeSave();
     }
 
     @Test
@@ -607,6 +685,11 @@ public class LoyaltyCardViewActivityTest
 
         // Check if the special NO_BARCODE string doesn't get saved
         saveLoyaltyCardWithArguments(activity, "store", "note", BARCODE_DATA, LoyaltyCardEditActivity.NO_BARCODE, false);
+    }
+    @Test @Config(qualifiers = "land")
+    public void removeBarcodeFromLoyaltyCardLandscape() throws IOException
+    {
+        removeBarcodeFromLoyaltyCard();
     }
 
     @Test
@@ -648,6 +731,11 @@ public class LoyaltyCardViewActivityTest
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
     }
+    @Test @Config(qualifiers = "land")
+    public void startCheckFontSizesLandscape()
+    {
+        startCheckFontSizes();
+    }
 
     @Test
     public void checkScreenOrientationLockSetting()
@@ -685,6 +773,11 @@ public class LoyaltyCardViewActivityTest
             }
         }
     }
+    @Test @Config(qualifiers = "land")
+    public void checkScreenOrientationLockSettingLandscape()
+    {
+        checkScreenOrientationLockSetting();
+    }
 
     @Test
     public void importCard()
@@ -705,5 +798,10 @@ public class LoyaltyCardViewActivityTest
         checkAllFields(activity, ViewMode.ADD_CARD, "Example Store", "", "123456", "AZTEC");
         assertEquals(-416706, ((ColorDrawable) activity.findViewById(R.id.headingColorSample).getBackground()).getColor());
         assertEquals(-1, ((ColorDrawable) activity.findViewById(R.id.headingStoreTextColorSample).getBackground()).getColor());
+    }
+    @Test @Config(qualifiers = "land")
+    public void importCardLandscape()
+    {
+        importCard();
     }
 }

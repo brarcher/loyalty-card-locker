@@ -1,6 +1,7 @@
 package protect.card_locker;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -30,6 +32,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
+
+import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import protect.card_locker.preferences.Settings;
 
@@ -302,6 +310,13 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             item.setVisible(false);
         }
 
+        if(loyaltyCard != null && !loyaltyCard.extras.getAllValues(new String[]{Locale.getDefault().getLanguage(), "en", ""}).isEmpty())
+        {
+            MenuItem extraItem = menu.findItem(R.id.action_view_extras);
+            extraItem.setIcon(getIcon(R.drawable.ic_info_outline_white, backgroundNeedsDarkIcons));
+            extraItem.setVisible(true);
+        }
+
         menu.findItem(R.id.action_share).setIcon(getIcon(R.drawable.ic_share_white, backgroundNeedsDarkIcons));
         menu.findItem(R.id.action_edit).setIcon(getIcon(R.drawable.ic_mode_edit_white_24dp, backgroundNeedsDarkIcons));
 
@@ -344,6 +359,18 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
                 }
                 rotationEnabled = !rotationEnabled;
                 return true;
+
+            case R.id.action_view_extras:
+                try
+                {
+                    displayExtrasDialog();
+                }
+                catch (JSONException ex)
+                {
+                    Toast.makeText(this, R.string.failedShowingExtras, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -364,6 +391,29 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             item.setTitle(R.string.lockScreen);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
+    }
+
+    private void displayExtrasDialog() throws JSONException
+    {
+        StringBuilder items = new StringBuilder();
+
+        HashMap<String, String> extraValues = loyaltyCard.extras.getAllValues(new String[]{Locale.getDefault().getLanguage(), "en", ""});
+        for(Map.Entry<String, String> entry : extraValues.entrySet())
+        {
+            items.append(entry.getValue() + "\n");
+        }
+
+        new AlertDialog.Builder(this)
+            .setMessage(items.toString())
+            .setCancelable(true)
+            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.dismiss();
+                }
+            })
+            .show();
     }
 
     /**

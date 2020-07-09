@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,9 +83,9 @@ public class LoyaltyCardCursorAdapterTest
 
 
     @Test
-    public void TestCursorAdapterEmptyNote()
+    public void TestCursorAdapterEmptyNote() throws JSONException
     {
-        db.insertLoyaltyCard("store", "", "cardId", BarcodeFormat.UPC_A.toString(), Color.BLACK, Color.WHITE);
+        db.insertLoyaltyCard("store", "", "cardId", BarcodeFormat.UPC_A.toString(), Color.BLACK, Color.WHITE, null, new ExtrasHelper());
         LoyaltyCard card = db.getLoyaltyCard(1);
 
         Cursor cursor = db.getLoyaltyCardCursor();
@@ -95,9 +97,9 @@ public class LoyaltyCardCursorAdapterTest
     }
 
     @Test
-    public void TestCursorAdapterWithNote()
+    public void TestCursorAdapterWithNote() throws JSONException
     {
-        db.insertLoyaltyCard("store", "note", "cardId", BarcodeFormat.UPC_A.toString(), Color.BLACK, Color.WHITE);
+        db.insertLoyaltyCard("store", "note", "cardId", BarcodeFormat.UPC_A.toString(), Color.BLACK, Color.WHITE, null, new ExtrasHelper());
         LoyaltyCard card = db.getLoyaltyCard(1);
 
         Cursor cursor = db.getLoyaltyCardCursor();
@@ -109,9 +111,9 @@ public class LoyaltyCardCursorAdapterTest
     }
 
     @Test
-    public void TestCursorAdapterFontSizes()
+    public void TestCursorAdapterFontSizes() throws JSONException
     {
-        db.insertLoyaltyCard("store", "note", "cardId", BarcodeFormat.UPC_A.toString(), Color.BLACK, Color.WHITE);
+        db.insertLoyaltyCard("store", "note", "cardId", BarcodeFormat.UPC_A.toString(), Color.BLACK, Color.WHITE, null, new ExtrasHelper());
         LoyaltyCard card = db.getLoyaltyCard(1);
 
         Cursor cursor = db.getLoyaltyCardCursor();

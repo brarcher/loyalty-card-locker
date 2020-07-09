@@ -2,7 +2,13 @@ package protect.card_locker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Base64;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.InvalidObjectException;
 
 public class ImportURIHelper {
@@ -12,6 +18,8 @@ public class ImportURIHelper {
     private static final String BARCODE_TYPE = DBHelper.LoyaltyCardDbIds.BARCODE_TYPE;
     private static final String HEADER_COLOR = DBHelper.LoyaltyCardDbIds.HEADER_COLOR;
     private static final String HEADER_TEXT_COLOR = DBHelper.LoyaltyCardDbIds.HEADER_TEXT_COLOR;
+    private static final String ICON = DBHelper.LoyaltyCardDbIds.ICON;
+    private static final String EXTRAS = DBHelper.LoyaltyCardDbIds.EXTRAS;
 
     private final Context context;
     private final String host;
@@ -25,7 +33,7 @@ public class ImportURIHelper {
         shareText = context.getResources().getString(R.string.intent_import_card_from_url_share_text);
     }
 
-    private boolean isImportUri(Uri uri) {
+    public boolean isImportUri(Uri uri) {
         return uri.getHost().equals(host) && uri.getPath().equals(path);
     }
 
@@ -53,14 +61,29 @@ public class ImportURIHelper {
             {
                 headerTextColor = Integer.parseInt(unparsedHeaderTextColor);
             }
-            return new LoyaltyCard(-1, store, note, cardId, barcodeType, headerColor, headerTextColor);
-        } catch (NullPointerException | NumberFormatException ex) {
+            String iconData = uri.getQueryParameter(ICON);
+            Bitmap icon = null;
+
+            if(!iconData.isEmpty())
+            {
+                byte[] iconBytes = Base64.decode(iconData, Base64.URL_SAFE);
+                icon = DBHelper.convertBitmapBlobToBitmap(iconBytes);
+            }
+            ExtrasHelper extras = new ExtrasHelper().fromJSON(new JSONObject(uri.getQueryParameter(EXTRAS)));
+            return new LoyaltyCard(-1, store, note, cardId, barcodeType, headerColor, headerTextColor, icon, extras);
+        } catch (NullPointerException | NumberFormatException | JSONException ex) {
             throw new InvalidObjectException("Not a valid import URI");
         }
     }
 
     // Protected for usage in tests
-    protected Uri toUri(LoyaltyCard loyaltyCard) {
+    protected Uri toUri(LoyaltyCard loyaltyCard) throws JSONException {
+        String icon = "";
+        if(loyaltyCard.icon != null)
+        {
+            icon = Base64.encodeToString(DBHelper.convertBitmapToBlob(loyaltyCard.icon), Base64.URL_SAFE);
+        }
+
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.scheme("https");
         uriBuilder.authority(host);
@@ -77,6 +100,8 @@ public class ImportURIHelper {
         {
             uriBuilder.appendQueryParameter(HEADER_TEXT_COLOR, loyaltyCard.headerTextColor.toString());
         }
+        uriBuilder.appendQueryParameter(ICON, icon);
+        uriBuilder.appendQueryParameter(EXTRAS, loyaltyCard.extras.toJSON().toString());
 
         return uriBuilder.build();
     }
@@ -91,7 +116,14 @@ public class ImportURIHelper {
         context.startActivity(shareIntent);
     }
 
-    public void startShareIntent(LoyaltyCard loyaltyCard) {
-        startShareIntent(toUri(loyaltyCard));
+    public boolean startShareIntent(LoyaltyCard loyaltyCard) {
+        try
+        {
+            startShareIntent(toUri(loyaltyCard));
+            return true;
+        }
+        catch (JSONException ex) {}
+
+        return false;
     }
 }

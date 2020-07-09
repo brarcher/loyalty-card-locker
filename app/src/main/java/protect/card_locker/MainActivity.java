@@ -14,7 +14,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
@@ -207,7 +206,10 @@ public class MainActivity extends AppCompatActivity
             else if(item.getItemId() == R.id.action_share)
             {
                 final ImportURIHelper importURIHelper = new ImportURIHelper(this);
-                importURIHelper.startShareIntent(card);
+                if(importURIHelper.startShareIntent(card))
+                {
+                    Toast.makeText(this, R.string.failedSharingCard, Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
         }

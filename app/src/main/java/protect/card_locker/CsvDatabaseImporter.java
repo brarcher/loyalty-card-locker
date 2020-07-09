@@ -1,13 +1,17 @@
 package protect.card_locker;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.Normalizer;
 
 /**
  * Class for importing a database from CSV (Comma Separate Values)
@@ -142,6 +146,23 @@ public class CsvDatabaseImporter implements DatabaseImporter
             headerTextColor = extractInt(DBHelper.LoyaltyCardDbIds.HEADER_TEXT_COLOR, record, true);
         }
 
-        helper.insertLoyaltyCard(database, id, store, note, cardId, barcodeType, headerColor, headerTextColor);
+        Bitmap icon = null;
+        String iconData = extractString(DBHelper.LoyaltyCardDbIds.ICON, record, "");
+        if(!iconData.isEmpty())
+        {
+            icon = DBHelper.convertBitmapBlobToBitmap(iconData.getBytes("UTF-8"));
+        }
+
+        ExtrasHelper extras = new ExtrasHelper();
+
+        try
+        {
+            extras.fromJSON(new JSONObject(extractString(DBHelper.LoyaltyCardDbIds.EXTRAS, record, "{}")));
+            helper.insertLoyaltyCard(database, id, store, note, cardId, barcodeType, headerColor, headerTextColor, icon, extras);
+        }
+        catch (JSONException ex)
+        {
+            throw new FormatException("Invalid JSON in extras field: " + ex);
+        }
     }
 }

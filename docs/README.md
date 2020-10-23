@@ -45,14 +45,12 @@ Windows:
 ./gradlew.bat build
 ```
 
-# Translating
-
-If you are interested in translating this application to another language, find the project listing on [Transifex](https://www.transifex.com/na-243/loyalty-card-locker).
-
 # Thanks
 
 This application uses the following image:
 - [Save](https://thenounproject.com/term/save/716011) by [Bernar Novalyi](https://thenounproject.com/bernar.novalyi)
 
 # Note from Developer
-The developer is currently on hiatus from the project. Questions and pull requests may not be looked at for some time. Apologies in advance.
+Development on this project has been suspended. No further changes are expected. Thank you for your support!
+
+A fork of this project called Catima can be found [here](https://github.com/TheLastProject/Catima). Consider that project for an alternative to Loyalty Card Keychain.

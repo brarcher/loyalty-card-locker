@@ -45,10 +45,6 @@ Windows:
 ./gradlew.bat build
 ```
 
-# Translating
-
-If you are interested in translating this application to another language, find the project listing on [Transifex](https://www.transifex.com/na-243/loyalty-card-locker).
-
 # Thanks
 
 This application uses the following image:

@@ -8,6 +8,15 @@
     android:fitsSystemWindows="true"
     >
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_add_white_24dp"
+        android:contentDescription="@string/action_add"
+        android:layout_margin="16dp" />
+
     <FrameLayout
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -35,12 +44,12 @@
                 android:layout_marginBottom="10.0dip"
                 android:layout_marginStart="15.0dip"
                 android:layout_marginEnd="15.0dip"
+                app:layout_constraintTop_toTopOf="parent"
                 android:padding="10.0dp"
                 android:background="#ffffff"
                 app:layout_constraintBottom_toTopOf="@+id/centerGuideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/barcodeImageDescription"/>
 
             <TextView
@@ -141,6 +150,15 @@
                 android:layout_height="?actionBarSize"
                 app:contentInsetStart="72.0dip"
                 app:layout_collapseMode="pin" />
+            <com.google.android.material.tabs.TabLayout
+                android:visibility="gone"
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:tabGravity="fill"
+                app:tabIndicatorAnimationDuration="0"
+                app:tabMode="scrollable"/>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

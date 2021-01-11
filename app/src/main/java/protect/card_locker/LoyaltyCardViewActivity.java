@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.core.view.MotionEventCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,8 +20,10 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -29,16 +33,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.BarcodeFormat;
+
+import java.util.List;
 
 import protect.card_locker.preferences.Settings;
 
 
-public class LoyaltyCardViewActivity extends AppCompatActivity
+public class LoyaltyCardViewActivity extends AppCompatActivity implements GestureDetector.OnGestureListener
 {
     private static final String TAG = "CardLocker";
     private static final double LUMINANCE_MIDPOINT = 0.5;
 
+    FloatingActionButton FabAdd;
+    TabLayout tabLayout;
+    TabLayout.OnTabSelectedListener onTabSelectedListener;
     TextView cardIdFieldView;
     TextView noteView;
     View noteViewDivider;
@@ -47,6 +58,8 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     View collapsingToolbarLayout;
     int loyaltyCardId;
     LoyaltyCard loyaltyCard;
+    List<LoyaltyCard> storeCards;
+    GestureDetectorCompat gestureDetector;
     boolean rotationEnabled;
     DBHelper db;
     ImportURIHelper importURIHelper;
@@ -104,6 +117,33 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         db = new DBHelper(this);
         importURIHelper = new ImportURIHelper(this);
 
+        FabAdd = findViewById(R.id.fabAdd);
+        FabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getApplicationContext(), LoyaltyCardEditActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("store", loyaltyCard.store);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+        });
+        tabLayout = findViewById(R.id.tabLayout);
+        onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                loyaltyCardId = storeCards.get(tab.getPosition()).id;
+                onResume();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        };
         cardIdFieldView = findViewById(R.id.cardIdView);
         noteView = findViewById(R.id.noteView);
         noteViewDivider = findViewById(R.id.noteViewDivider);
@@ -112,6 +152,23 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
 
         rotationEnabled = true;
+
+        gestureDetector = new GestureDetectorCompat(this, this);
+
+        // Restore active card id after rotation
+        if(savedInstanceState != null)
+        {
+            loyaltyCardId = savedInstanceState.getInt("id");
+            onResume();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save active card id before rotation
+        savedInstanceState.putInt("id", loyaltyCardId);
+
+        super.onSaveInstanceState(savedInstanceState);
 
         // Allow making barcode fullscreen on tap
         barcodeImage.setOnClickListener(new View.OnClickListener() {
@@ -174,6 +231,38 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             return;
         }
 
+        storeCards = db.getLoyaltyCardsForStore(loyaltyCard.store);
+        tabLayout.removeOnTabSelectedListener(onTabSelectedListener);
+        tabLayout.removeAllTabs();
+        for(int i = 0; i < storeCards.size(); i++)
+        {
+            LoyaltyCard storeCard = storeCards.get(i);
+
+            // Use only first line of note
+            String loyaltyCardText = storeCard.note.split("\\r?\\n")[0].trim();
+            if(loyaltyCardText.isEmpty())
+            {
+                loyaltyCardText = String.valueOf(i + 1);
+            }
+            else if(loyaltyCardText.length() > 15)
+            {
+                // Shorten long notes
+                loyaltyCardText = loyaltyCardText.substring(0, 15).trim() + "…";
+            }
+
+            tabLayout.addTab(tabLayout.newTab().setText(loyaltyCardText));
+
+            if(storeCard.id == loyaltyCardId)
+            {
+                tabLayout.getTabAt(i).select();
+            }
+        }
+        tabLayout.addOnTabSelectedListener(onTabSelectedListener);
+        if(tabLayout.getTabCount() > 1)
+        {
+            tabLayout.setVisibility(View.VISIBLE);
+        }
+
         String formatString = loyaltyCard.barcodeType;
         format = !formatString.isEmpty() ? BarcodeFormat.valueOf(formatString) : null;
         cardIdString = loyaltyCard.cardId;
@@ -189,6 +278,8 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(noteView,
                     getResources().getInteger(R.integer.settings_card_note_min_font_size_sp)-1,
                     settings.getCardNoteFontSize(), 1, TypedValue.COMPLEX_UNIT_SP);
+            noteView.setVisibility(View.VISIBLE);
+            noteViewDivider.setVisibility(View.VISIBLE);
         }
         else
         {
@@ -272,7 +363,7 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
         }
         else
         {
-            findViewById(R.id.barcode).setVisibility(View.GONE);
+            findViewById(R.id.barcode).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -364,6 +455,55 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             item.setTitle(R.string.lockScreen);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
+    }
+
+    // Gesture detection
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {}
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) { }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        int currentTab = tabLayout.getSelectedTabPosition();
+
+        if (motionEvent1.getX() > motionEvent.getX())
+        {
+            // Swipe left
+            int nextTab = currentTab == 0 ? tabLayout.getTabCount() - 1 : currentTab - 1;
+            tabLayout.getTabAt(nextTab).select();
+        }
+        else
+        {
+            // Swipe right
+            int nextTab = currentTab < (tabLayout.getTabCount() - 1) ? currentTab + 1 : 0;
+            tabLayout.getTabAt(nextTab).select();
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent)
+    {
+        gestureDetector.onTouchEvent(motionEvent);
+        return super.onTouchEvent(motionEvent);
     }
 
     /**

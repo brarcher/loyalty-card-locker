@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -39,6 +41,7 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
 
     protected static final int SELECT_BARCODE_REQUEST = 1;
 
+    FloatingActionButton fabSave;
     EditText storeFieldEdit;
     EditText noteFieldEdit;
     ImageView headingColorSample;
@@ -58,6 +61,7 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
 
     int loyaltyCardId;
     boolean updateLoyaltyCard;
+    String loyaltyCardStorePrefill = "";
     Uri importLoyaltyCardUri = null;
     Integer headingColorValue = null;
     Integer headingStoreTextColorValue = null;
@@ -70,6 +74,7 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         final Bundle b = intent.getExtras();
         loyaltyCardId = b != null ? b.getInt("id") : 0;
         updateLoyaltyCard = b != null && b.getBoolean("update", false);
+        loyaltyCardStorePrefill = b != null ? b.getString("store", "") : "";
         importLoyaltyCardUri = intent.getData();
 
         Log.d(TAG, "View activity: id=" + loyaltyCardId
@@ -95,6 +100,7 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         db = new DBHelper(this);
         importUriHelper = new ImportURIHelper(this);
 
+        fabSave = findViewById(R.id.fabSave);
         storeFieldEdit = findViewById(R.id.storeNameEdit);
         noteFieldEdit = findViewById(R.id.noteEdit);
         headingColorSample = findViewById(R.id.headingColorSample);
@@ -134,6 +140,14 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         super.onResume();
 
         Log.i(TAG, "To view card: " + loyaltyCardId);
+
+        fabSave.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view) {
+                doSave();
+            }
+        });
 
         if(updateLoyaltyCard)
         {
@@ -209,6 +223,12 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         {
             setTitle(R.string.addCardTitle);
             hideBarcode();
+        }
+
+        // Set prefill values if nothing is set
+        if(storeFieldEdit.getText().length() == 0 && !loyaltyCardStorePrefill.isEmpty())
+        {
+            storeFieldEdit.setText(loyaltyCardStorePrefill);
         }
 
         if(headingColorValue == null)
@@ -414,10 +434,6 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
         {
             getMenuInflater().inflate(R.menu.card_update_menu, menu);
         }
-        else
-        {
-            getMenuInflater().inflate(R.menu.card_add_menu, menu);
-        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -464,10 +480,6 @@ public class LoyaltyCardEditActivity extends AppCompatActivity
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
-                return true;
-
-            case R.id.action_save:
-                doSave();
                 return true;
         }
 

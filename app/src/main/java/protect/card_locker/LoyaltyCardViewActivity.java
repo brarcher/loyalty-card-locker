@@ -55,6 +55,7 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
     String cardIdString;
     BarcodeFormat format;
 
+    boolean starred;
     boolean backgroundNeedsDarkIcons;
     boolean barcodeIsFullscreen = false;
     ViewGroup.LayoutParams barcodeImageState;
@@ -302,10 +303,28 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
             item.setVisible(false);
         }
 
+        loyaltyCard = db.getLoyaltyCard(loyaltyCardId);
+        starred = loyaltyCard.starStatus != 0;
+
         menu.findItem(R.id.action_share).setIcon(getIcon(R.drawable.ic_share_white, backgroundNeedsDarkIcons));
         menu.findItem(R.id.action_edit).setIcon(getIcon(R.drawable.ic_mode_edit_white_24dp, backgroundNeedsDarkIcons));
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (starred) {
+            menu.findItem(R.id.action_star_unstar).setIcon(getIcon(R.drawable.ic_starred_white, backgroundNeedsDarkIcons));
+            menu.findItem(R.id.action_star_unstar).setTitle(R.string.unstar);
+        }
+        else {
+            menu.findItem(R.id.action_star_unstar).setIcon(getIcon(R.drawable.ic_unstarred_white, backgroundNeedsDarkIcons));
+            menu.findItem(R.id.action_star_unstar).setTitle(R.string.star);
+        }
+        return true;
     }
 
     @Override
@@ -344,10 +363,17 @@ public class LoyaltyCardViewActivity extends AppCompatActivity
                 }
                 rotationEnabled = !rotationEnabled;
                 return true;
+
+            case R.id.action_star_unstar:
+                starred = !starred;
+                db.updateLoyaltyCardStarStatus(loyaltyCardId, starred ? 1 : 0);
+                invalidateOptionsMenu();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     private void setOrientatonLock(MenuItem item, boolean lock)
     {
